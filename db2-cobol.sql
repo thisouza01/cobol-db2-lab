@@ -13,8 +13,13 @@
 000013 --     IDADEFUN     SMALLINT            NOT NULL, 
 000014 --     EMAILFUN     VARCHAR(30))                  
 000015 --------------------------------------------------
-000016   CREATE UNIQUE INDEX IDXFUNC                     
-000017       ON FUNCIONARIOS(CODFUN);                    
-000018   CREATE UNIQUE INDEX IDXDEPTO                    
-000019       ON DEPARTAMENTOS(CODDEPTO)                  
+000016 --CREATE UNIQUE INDEX IDXFUNC                     
+000017 --    ON FUNCIONARIOS(CODFUN);                    
+000018 --CREATE UNIQUE INDEX IDXDEPTO                    
+000019 --    ON DEPARTAMENTOS(CODDEPTO)                  
 000020 --------------------------------------------------
+000021   ALTER TABLE FUNCIONARIOS                        
+000022       ADD FOREIGN KEY(DEPTOFUN)                   
+000023       REFERENCES DEPARTAMENTOS                    
+000024       ON DELETE RESTRICT                          
+000025 --------------------------------------------------
