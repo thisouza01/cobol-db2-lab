@@ -18,8 +18,13 @@
 000018 --      WHERE ADMISSFUN BETWEEN '2025-08-01' AND '2025-09-30'   
 000019 --      ORDER BY NOMEFUN    
 000020 -----------------------------------      
-000021   SELECT NOMEFUN, SALARIOFUN, IDADEFUN   
-000022         FROM FUNCIONARIOS                
-000023         WHERE IDADEFUN IN(20, 22)        
-000024         ORDER BY NOMEFUN                 
+000021 --SELECT NOMEFUN, SALARIOFUN, IDADEFUN   
+000022 --      FROM FUNCIONARIOS                
+000023 --      WHERE IDADEFUN IN(20, 22)        
+000024 --      ORDER BY NOMEFUN         
+000025 -----------------------------------   
+000026   SELECT NOMEFUN, SALARIOFUN          
+000027         FROM FUNCIONARIOS             
+000028         WHERE NOMEFUN LIKE '%T%'      
+000029         ORDER BY NOMEFUN DESC         
 
