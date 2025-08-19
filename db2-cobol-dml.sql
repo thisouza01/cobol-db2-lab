@@ -13,8 +13,13 @@
 000013 -----------------------------------  
 000014   SELECT * FROM FUNCIONARIOS;         
 000015 -----------------------------------                             
-000016   SELECT NOMEFUN, SALARIOFUN, ADMISSFUN                         
-000017         FROM FUNCIONARIOS                                       
-000018         WHERE ADMISSFUN BETWEEN '2025-08-01' AND '2025-09-30'   
-000019         ORDER BY NOMEFUN                                        
+000016 --SELECT NOMEFUN, SALARIOFUN, ADMISSFUN                         
+000017 --      FROM FUNCIONARIOS                                       
+000018 --      WHERE ADMISSFUN BETWEEN '2025-08-01' AND '2025-09-30'   
+000019 --      ORDER BY NOMEFUN    
+000020 -----------------------------------      
+000021   SELECT NOMEFUN, SALARIOFUN, IDADEFUN   
+000022         FROM FUNCIONARIOS                
+000023         WHERE IDADEFUN IN(20, 22)        
+000024         ORDER BY NOMEFUN                 
 
