@@ -43,12 +43,21 @@
 000043 --           AND SALARIOFUN > 1000.00                    
 000044 --      ORDER BY NOMEFUN  
 000045 -----------------------------------          
-000046   SELECT NOMEFUN, SALARIOFUN                 
-000047         FROM FUNCIONARIOS                    
-000048         WHERE DEPTOFUN = 'ADM'               
-000049               AND SALARIOFUN >               
-000050         (SELECT AVG(SALARIOFUN)              
-000051                FROM FUNCIONARIOS             
-000052                WHERE DEPTOFUN = 'RH')        
-000053         ORDER BY NOMEFUN                     
-
+000046 --SELECT NOMEFUN, SALARIOFUN                 
+000047 --      FROM FUNCIONARIOS                    
+000048 --      WHERE DEPTOFUN = 'ADM'               
+000049 --            AND SALARIOFUN >               
+000050 --      (SELECT AVG(SALARIOFUN)              
+000051 --             FROM FUNCIONARIOS             
+000052 --             WHERE DEPTOFUN = 'RH')        
+000053 --      ORDER BY NOMEFUN                     
+000054 -----------------------------------   
+000055   SELECT NOMEFUN, SALARIOFUN          
+000056         FROM FUNCIONARIOS             
+000057         WHERE DEPTOFUN = 'ADM'        
+000058         AND SALARIOFUN > ALL          
+000059         (SELECT SALARIOFUN            
+000060                FROM FUNCIONARIOS      
+000061                WHERE DEPTOFUN = 'RH') 
+000062         ORDER BY NOMEFUN              
+000063 -----------------------------------   
