@@ -36,10 +36,19 @@
 000036 --      FROM FUNCIONARIOS                                  
 000037 --      GROUP BY DEPTOFUN       
 000038 -----------------------------------                      
-000039   SELECT FUNC.NOMEFUN, DEPT.NOMEDEPTO, FUNC.SALARIOFUN   
-000040         FROM FUNCIONARIOS FUNC,                          
-000041              DEPARTAMENTOS DEPT                          
-000042         WHERE DEPT.CODDEPTO = FUNC.DEPTOFUN              
-000043              AND SALARIOFUN > 1000.00                    
-000044         ORDER BY NOMEFUN                                 
+000039 --SELECT FUNC.NOMEFUN, DEPT.NOMEDEPTO, FUNC.SALARIOFUN   
+000040 --      FROM FUNCIONARIOS FUNC,                          
+000041 --           DEPARTAMENTOS DEPT                          
+000042 --      WHERE DEPT.CODDEPTO = FUNC.DEPTOFUN              
+000043 --           AND SALARIOFUN > 1000.00                    
+000044 --      ORDER BY NOMEFUN  
+000045 -----------------------------------          
+000046   SELECT NOMEFUN, SALARIOFUN                 
+000047         FROM FUNCIONARIOS                    
+000048         WHERE DEPTOFUN = 'ADM'               
+000049               AND SALARIOFUN >               
+000050         (SELECT AVG(SALARIOFUN)              
+000051                FROM FUNCIONARIOS             
+000052                WHERE DEPTOFUN = 'RH')        
+000053         ORDER BY NOMEFUN                     
 
