@@ -23,8 +23,11 @@
 000023 --      WHERE IDADEFUN IN(20, 22)        
 000024 --      ORDER BY NOMEFUN         
 000025 -----------------------------------   
-000026   SELECT NOMEFUN, SALARIOFUN          
-000027         FROM FUNCIONARIOS             
-000028         WHERE NOMEFUN LIKE '%T%'      
-000029         ORDER BY NOMEFUN DESC         
-
+000026 --SELECT NOMEFUN, SALARIOFUN          
+000027 --      FROM FUNCIONARIOS             
+000028 --      WHERE NOMEFUN LIKE '%T%'      
+000029 --      ORDER BY NOMEFUN DESC         
+000030 -----------------------------------                       
+000031   SELECT SUM(SALARIOFUN) AS "SOMA DOS SALARIOS DA ADM"    
+000032         FROM FUNCIONARIOS                                 
+000033         WHERE DEPTOFUN = 'ADM'                            
