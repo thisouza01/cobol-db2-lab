@@ -11,5 +11,10 @@
 000011 --    VALUES('ADM',                  
 000012 --           'ADMINISTRACAO')        
 000013 -----------------------------------  
-000014   SELECT * FROM FUNCIONARIOS         
+000014   SELECT * FROM FUNCIONARIOS;         
+000015 -----------------------------------                             
+000016   SELECT NOMEFUN, SALARIOFUN, ADMISSFUN                         
+000017         FROM FUNCIONARIOS                                       
+000018         WHERE ADMISSFUN BETWEEN '2025-08-01' AND '2025-09-30'   
+000019         ORDER BY NOMEFUN                                        
 
