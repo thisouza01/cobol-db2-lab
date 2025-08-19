@@ -6,6 +6,10 @@
 000006 --         '08/15/2025',             
 000007 --         23,                       
 000008 --         'THIAGO@TESTE.COM')      
-000009 --INSERT INTO DEPARTAMENTOS   
-000010 --    VALUES('ADM',           
-000011 --           'ADMINISTRACAO') 
+000009 -----------------------------------  
+000010 --INSERT INTO DEPARTAMENTOS          
+000011 --    VALUES('ADM',                  
+000012 --           'ADMINISTRACAO')        
+000013 -----------------------------------  
+000014   SELECT * FROM FUNCIONARIOS         
+
