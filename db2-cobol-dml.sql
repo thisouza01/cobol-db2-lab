@@ -32,7 +32,14 @@
 000032 --      FROM FUNCIONARIOS                                 
 000033 --      WHERE DEPTOFUN = 'ADM'  
 000034 -----------------------------------                        
-000035   SELECT DEPTOFUN, SUM(SALARIOFUN) AS "SOMA DOS SALARIOS"  
-000036         FROM FUNCIONARIOS                                  
-000037         GROUP BY DEPTOFUN                                  
+000035 --SELECT DEPTOFUN, SUM(SALARIOFUN) AS "SOMA DOS SALARIOS"  
+000036 --      FROM FUNCIONARIOS                                  
+000037 --      GROUP BY DEPTOFUN       
+000038 -----------------------------------                      
+000039   SELECT FUNC.NOMEFUN, DEPT.NOMEDEPTO, FUNC.SALARIOFUN   
+000040         FROM FUNCIONARIOS FUNC,                          
+000041              DEPARTAMENTOS DEPT                          
+000042         WHERE DEPT.CODDEPTO = FUNC.DEPTOFUN              
+000043              AND SALARIOFUN > 1000.00                    
+000044         ORDER BY NOMEFUN                                 
 
