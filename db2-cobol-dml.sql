@@ -59,15 +59,21 @@
 000059 --      (SELECT SALARIOFUN            
 000060 --             FROM FUNCIONARIOS      
 000061 --             WHERE DEPTOFUN = 'RH') 
-000062 --      ORDER BY NOMEFUN              
-000063 -----------------------------------             
-000064   SELECT NOMEFUN, SALARIOFUN                    
-000065         FROM FUNCIONARIOS                       
-000066         WHERE DEPTOFUN = 'ADM'                  
-000067              AND EXISTS                         
-000068         (SELECT SALARIOFUN                      
-000069                FROM FUNCIONARIOS                
-000070                WHERE DEPTOFUN = 'RH '           
-000071                     AND SALARIOFUN > 3000.00)   
-000072         ORDER BY NOMEFUN                        
+000062 --      ORDER BY NOMEFUN    
+000063 -----------------------------------    
+000064 --SELECT NOMEFUN, SALARIOFUN                    
+000065 --      FROM FUNCIONARIOS                       
+000066 --      WHERE DEPTOFUN = 'ADM'                  
+000067 --           AND EXISTS                         
+000068 --      (SELECT SALARIOFUN                      
+000069 --             FROM FUNCIONARIOS                
+000070 --             WHERE DEPTOFUN = 'RH '           
+000071 --                  AND SALARIOFUN > 3000.00)   
+000072 --      ORDER BY NOMEFUN                        
 000073 -----------------------------------             
+000074   SELECT * FROM FUNCIONARIOS;                   
+000075   UPDATE FUNCIONARIOS                           
+000076         SET SALARIOFUN = 1000.00                
+000077         WHERE CODFUN = 'AA01';                  
+000078   SELECT * FROM FUNCIONARIOS                    
+000079 -----------------------------------             
