@@ -53,25 +53,27 @@
 000053       *******************************************************           
 000054        300-LER-FUNCIONARIOS SECTION.                                    
 000055        301-LER-FUNCIONARIOS.                                           
-000056            EXEC SQL                                                    
-000057                SELECT *                                                
-000058                    INTO :REG-FUNCIONARIOS                              
-000059                    FROM EAD719.FUNCIONARIOS                            
-000060            END-EXEC.                                                   
-000061            EVALUATE SQLCODE                                            
-000062                WHEN 0                                                  
-000063                    CONTINUE                                            
-000064                WHEN 100                                                
-000065                    DISPLAY 'FUNCIONARIO ' DB2-CODFUN                   
-000066                            ' NAO EXISTE'                               
-000067                WHEN OTHER                                              
-000068                    MOVE SQLCODE TO WK-SQLCODE-EDIT                     
-000069                    DISPLAY 'ERRO: ' WK-SQLCODE-EDIT                    
-000070                            ' NO COMANDO SELECT'                        
-000071                    MOVE 12 TO RETURN-CODE                              
-000072                    STOP RUN                                             
-000073            END-EVALUATE.                                                
-000074       *******************************************************           
-000075        900-FINALIZAR SECTION.                                           
-000076        901-FINALIZAR.                                                   
-000077            EXIT.                                                        
+000056            MOVE WK-ACCEPT-CODFUN TO DB2-CODFUN                         
+000057            EXEC SQL                                                    
+000058                SELECT *                                                
+000059                    INTO :REG-FUNCIONARIOS                              
+000060                    FROM EAD719.FUNCIONARIOS                            
+000061                    WHERE CODFUN = :DB2-CODFUN                          
+000062            END-EXEC.                                                   
+000063            EVALUATE SQLCODE                                            
+000064                WHEN 0                                                  
+000065                    CONTINUE                                            
+000066                WHEN 100                                                
+000067                    DISPLAY 'FUNCIONARIO ' DB2-CODFUN                   
+000068                            ' NAO EXISTE'                               
+000069                WHEN OTHER                                              
+000070                    MOVE SQLCODE TO WK-SQLCODE-EDIT                                         
+000071                    DISPLAY 'ERRO: ' WK-SQLCODE-EDIT                    
+000072                            ' NO COMANDO SELECT'                        
+000073                    MOVE 12 TO RETURN-CODE                              
+000074                    STOP RUN                                            
+000075            END-EVALUATE.                                               
+000076       *******************************************************          
+000077        900-FINALIZAR SECTION.                                          
+000078        901-FINALIZAR.                                                  
+000079            EXIT.                                                       
