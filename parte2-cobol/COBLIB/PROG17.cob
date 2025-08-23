@@ -26,72 +26,82 @@
 000026                    SELECT * FROM EAD719.FUNCIONARIOS                   
 000027                    ORDER BY CODFUN                                     
 000028            END-EXEC.                                                   
-000029        77  WK-SALARIO-EDIT        PIC ZZZ.ZZ9,99 VALUE ZEROS.          
-000030        77  WK-SQLCODE-EDIT        PIC -999       VALUE ZEROS.          
-000031        77  WK-ACCEPT-CODFUN       PIC X(04)      VALUE SPACES.         
-000032       *                                                                
-000033        PROCEDURE DIVISION.                                             
-000034        000-PRINCIPAL SECTION.                                          
-000035        001-PRINCIPAL.                                                  
-000036            PERFORM 101-INICIAR.                                        
-000037            PERFORM 201-PROCESSAR UNTIL SQLCODE = 100.                  
-000038            PERFORM 901-FINALIZAR.                                      
-000039            STOP RUN.                                                   
-000040       *******************************************************          
-000041        100-INICIAR SECTION.                                            
-000042        101-INICIAR.                                                    
-000043            EXEC SQL                                                    
-000044                OPEN FUNCTEMP                                           
-000045            END-EXEC.                                                   
-000046            EVALUATE SQLCODE                                            
-000047                WHEN 0                                                  
-000048                    PERFORM 301-LER-FUNCIONARIOS                        
-000049                WHEN 100                                                
-000050                    DISPLAY 'FIM DA TABELA'                             
-000051                WHEN OTHER                                               
-000052                    MOVE SQLCODE TO WK-SQLCODE-EDIT                      
-000053                    DISPLAY 'ERRO: ' WK-SQLCODE-EDIT                     
-000054                            ' NO COMANDO OPEN CURSOR'                    
-000055                    MOVE 12 TO RETURN-CODE                               
-000056                    STOP RUN                                             
-000057            END-EVALUATE.                                                
-000058       *******************************************************           
-000059        200-PROCESSAR SECTION.                                           
-000060        201-PROCESSAR.                                                   
-000061            DISPLAY 'CODIGO      : ' DB2-CODFUN.                         
-000062            DISPLAY 'NOME        : ' DB2-NOMEFUN-TEXT.                   
-000063            MOVE DB2-SALARIOFUN TO WK-SALARIO-EDIT.                      
-000064            DISPLAY 'SALARIO     : ' WK-SALARIO-EDIT.                    
-000065            DISPLAY 'DEPARTAMENTO: ' DB2-DEPTOFUN.                       
-000066            DISPLAY 'ADMISSSAO   : ' DB2-ADMISSFUN.                      
-000067            DISPLAY 'IDADE       : ' DB2-IDADEFUN.                       
-000068            DISPLAY 'EMAIL       : ' DB2-EMAILFUN-TEXT.                 
-000069            DISPLAY '****************************************'.         
-000070            PERFORM 301-LER-FUNCIONARIOS.                               
-000071       *******************************************************          
-000072        300-LER-FUNCIONARIOS SECTION.                                   
-000073        301-LER-FUNCIONARIOS.                                           
-000074            MOVE SPACES TO DB2-NOMEFUN-TEXT.                            
-000075            MOVE SPACES TO DB2-EMAILFUN-TEXT.                           
-000076            EXEC SQL                                                    
-000077                FETCH FUNCTEMP                                          
-000078                    INTO :REG-FUNCIONARIOS                              
-000079            END-EXEC.                                                   
-000080            EVALUATE SQLCODE                                            
-000081                WHEN 0                                                  
-000082                    CONTINUE                                            
-000083                WHEN 100                                                
-000084                    DISPLAY 'FIM DA TABELA'                             
-000085                WHEN OTHER                                               
-000086                    MOVE SQLCODE TO WK-SQLCODE-EDIT                      
-000087                    DISPLAY 'ERRO: ' WK-SQLCODE-EDIT                     
-000088                            ' NO COMANDO FETCH'                          
-000089                    MOVE 12 TO RETURN-CODE                               
-000090                    STOP RUN                                             
-000091            END-EVALUATE.                                                
-000092       *******************************************************           
-000093        900-FINALIZAR SECTION.                                           
-000094        901-FINALIZAR.                                                   
-000095            EXEC SQL                                                     
-000096                CLOSE FUNCTEMP                                           
-000097            END-EXEC.                                                    
+000029        77  WK-INDICATOR-EMAIL     PIC S9(04) COMP VALUE ZEROS.          
+000030        77  WK-SALARIO-EDIT        PIC ZZZ.ZZ9,99  VALUE ZEROS.          
+000031        77  WK-SQLCODE-EDIT        PIC -999        VALUE ZEROS.          
+000032        77  WK-ACCEPT-CODFUN       PIC X(04)       VALUE SPACES.         
+000033       *                                                                 
+000034        PROCEDURE DIVISION.                                              
+000035        000-PRINCIPAL SECTION.                                           
+000036        001-PRINCIPAL.                                                   
+000037            PERFORM 101-INICIAR.                                         
+000038            PERFORM 201-PROCESSAR UNTIL SQLCODE = 100.                   
+000039            PERFORM 901-FINALIZAR.                                       
+000040            STOP RUN.                                                    
+000041       *******************************************************           
+000042        100-INICIAR SECTION.                                             
+000043        101-INICIAR.                                                     
+000044            EXEC SQL                                                     
+000045                OPEN FUNCTEMP                                            
+000046            END-EXEC.                                                         
+000047            EVALUATE SQLCODE                                            
+000048                WHEN 0                                                  
+000049                    PERFORM 301-LER-FUNCIONARIOS                        
+000050                WHEN 100                                                
+000051                    DISPLAY 'FIM DA TABELA'                             
+000052                WHEN OTHER                                              
+000053                    MOVE SQLCODE TO WK-SQLCODE-EDIT                     
+000054                    DISPLAY 'ERRO: ' WK-SQLCODE-EDIT                    
+000055                            ' NO COMANDO OPEN CURSOR'                   
+000056                    MOVE 12 TO RETURN-CODE                              
+000057                    STOP RUN                                            
+000058            END-EVALUATE.                                               
+000059       *******************************************************          
+000060        200-PROCESSAR SECTION.                                          
+000061        201-PROCESSAR.                                                  
+000062            DISPLAY 'CODIGO      : ' DB2-CODFUN.                        
+000063            DISPLAY 'NOME        : ' DB2-NOMEFUN-TEXT.                  
+000064            MOVE DB2-SALARIOFUN TO WK-SALARIO-EDIT.                     
+000065            DISPLAY 'SALARIO     : ' WK-SALARIO-EDIT.                   
+000066            DISPLAY 'DEPARTAMENTO: ' DB2-DEPTOFUN.                      
+000067            DISPLAY 'ADMISSSAO   : ' DB2-ADMISSFUN.                     
+000068            DISPLAY 'IDADE       : ' DB2-IDADEFUN.                      
+000069            DISPLAY 'EMAIL       : ' DB2-EMAILFUN-TEXT.                 
+000070            DISPLAY '****************************************'.         
+000071            PERFORM 301-LER-FUNCIONARIOS.                               
+000072       *******************************************************          
+000073        300-LER-FUNCIONARIOS SECTION.                                   
+000074        301-LER-FUNCIONARIOS.                                           
+000075            MOVE SPACES TO DB2-NOMEFUN-TEXT.                            
+000076            MOVE SPACES TO DB2-EMAILFUN-TEXT.                           
+000077            EXEC SQL                                                    
+000078                FETCH FUNCTEMP                                          
+000079                  INTO :DB2-CODFUN,                                   
+000080                       :DB2-NOMEFUN,                                  
+000081                       :DB2-SALARIOFUN,                               
+000082                       :DB2-DEPTOFUN,                                 
+000083                       :DB2-ADMISSFUN,                                
+000084                       :DB2-IDADEFUN,                                 
+000085                       :DB2-EMAILFUN INDICATOR :WK-INDICATOR-EMAIL    
+000086            END-EXEC.                                                   
+000087            IF WK-INDICATOR-EMAIL = -1                                  
+000088                MOVE '-------------------' TO DB2-EMAILFUN              
+000089            END-IF.                                                     
+000090            EVALUATE SQLCODE                                            
+000091                WHEN 0                                                  
+000092                    CONTINUE                                            
+000093                WHEN 100                                                
+000094                    DISPLAY 'FIM DA TABELA'                             
+000095                WHEN OTHER                                              
+000096                    MOVE SQLCODE TO WK-SQLCODE-EDIT                     
+000097                    DISPLAY 'ERRO: ' WK-SQLCODE-EDIT  
+000098                            ' NO COMANDO FETCH'                         
+000099                    MOVE 12 TO RETURN-CODE                              
+000100                    STOP RUN                                            
+000101            END-EVALUATE.                                               
+000102       *******************************************************          
+000103        900-FINALIZAR SECTION.                                          
+000104        901-FINALIZAR.                                                  
+000105            EXEC SQL                                                    
+000106                CLOSE FUNCTEMP                                          
+000107            END-EXEC.                                                                     
