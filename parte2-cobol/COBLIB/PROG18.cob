@@ -32,96 +32,270 @@
 000032            05 WK-DEPTOFUN-ACCEPT     PIC X(3)        VALUE SPACES.     
 000033            05 WK-ADMISSFUN-ACCEPT    PIC X(10)       VALUE SPACES.     
 000034            05 WK-IDADEFUN-ACCEPT     PIC 99          VALUE ZEROS.      
-000035            05 WK-EMAILFUN-ACCEPT     PIC X(30)       VALUE SPACES.     
-000036       *                                                                
-000037        PROCEDURE DIVISION.                                             
-000038        000-PRINCIPAL SECTION.                                          
-000039        001-PRINCIPAL.                                                  
-000040            PERFORM 101-INICIAR.                                        
-000041            PERFORM 201-PROCESSAR.                                      
-000042            PERFORM 901-FINALIZAR.                                      
-000043            STOP RUN.                                                   
-000044       *******************************************************          
-000045        100-INICIAR SECTION.                                            
-000046        101-INICIAR.                                                    
-000047            ACCEPT WK-ACCEPT FROM SYSIN.                                
-000048            ACCEPT WK-ACCEPT FROM SYSIN.                                
-000049       *******************************************************          
-000050        200-PROCESSAR SECTION.                                          
-000051        201-PROCESSAR.                                                  
-000052            EVALUATE WK-FUNCAO-ACCEPT                                   
-000053                WHEN 'I'                                                
-000054                    PERFORM 202-INCLUSAO                                
-000055                WHEN 'E'                                                
-000056                    PERFORM 203-EXCLUSAO                                
-000057                WHEN 'A'                                                
-000058                    PERFORM 204-ALTERACAO                               
-000059                WHEN OTHER                                              
-000060                    DISPLAY 'FUNCAO ' WK-FUNCAO-ACCEPT ' INVALIDA!'     
-000061            END-EVALUATE.                                               
-000062       *                                                                
-000063        202-INCLUSAO.                                                   
-000064            MOVE WK-CODFUN-ACCEPT     TO DB2-CODFUN.                    
-000065            MOVE WK-NOMEFUN-ACCEPT    TO DB2-NOMEFUN-TEXT.              
-000066            PERFORM 205-CONTA-NOMEFUN.                                  
-000067            MOVE WK-SALARIOFUN-ACCEPT TO DB2-SALARIOFUN.                
-000068            MOVE WK-DEPTOFUN-ACCEPT   TO DB2-DEPTOFUN.                  
-000069            MOVE WK-ADMISSFUN-ACCEPT  TO DB2-ADMISSFUN.                 
-000070            MOVE WK-IDADEFUN-ACCEPT   TO DB2-IDADEFUN.                  
-000071            MOVE WK-EMAILFUN-ACCEPT   TO DB2-EMAILFUN-TEXT.             
-000072            PERFORM 206-CONTA-EMAILFUN.                                 
-000073            EXEC SQL                                                    
-000074                INSERT INTO EAD719.FUNCIONARIOS                         
-000075                VALUES(:DB2-CODFUN,                                     
-000076                       :DB2-NOMEFUN,                                    
-000077                       :DB2-SALARIOFUN,                                 
-000078                       :DB2-DEPTOFUN,                                   
-000079                       :DB2-ADMISSFUN,                                  
-000080                       :DB2-IDADEFUN,                                   
-000081                       :DB2-EMAILFUN)                                   
-000082            END-EXEC.                                                   
-000083            EVALUATE SQLCODE                                            
-000084                WHEN 0                                                  
-000085                    DISPLAY 'FUNCIONARIO ' DB2-CODFUN                   
-000086                            ' FOI INCLUIDO!'                            
-000087                WHEN -803                                               
-000088                    DISPLAY 'FUNCIONARIO ' DB2-CODFUN                   
-000089                            ' JA EXISTE!'                               
-000090                WHEN -530                                               
-000091                    DISPLAY 'DEPARTAMENTO ' DB2-DEPTOFUN                
-000092                            ' NAO EXISTE!'                              
-000093                WHEN OTHER                                              
-000094                    MOVE SQLCODE TO WK-SQLCODE-EDIT                     
-000095                    DISPLAY 'ERRO ' WK-SQLCODE-EDIT                     
-000096                            ' NO COMANDO INSERT'                        
-000097                    MOVE 12 TO RETURN-CODE                               
-000098                    STOP RUN                                             
-000099            END-EVALUATE.                                                
-000100       *                                                                 
-000101        203-EXCLUSAO.                                                    
-000102            EXIT.                                                        
-000103       *                                                                 
-000104        204-ALTERACAO.                                                   
-000105            EXIT.                                                        
-000106       *                                                                 
-000107        205-CONTA-NOMEFUN.                                               
-000108            MOVE 30 TO DB2-NOMEFUN-LEN.                                  
-000109            PERFORM VARYING WK-POSICAO FROM 30 BY -1                     
-000110                    UNTIL DB2-NOMEFUN-TEXT(WK-POSICAO:1) NOT EQUAL SPACES
-000111                SUBTRACT 1 FROM DB2-NOMEFUN-LEN                          
-000112            END-PERFORM.                                                 
-000113       *                                                                 
-000114        206-CONTA-EMAILFUN.                                              
-000115            MOVE 30 TO DB2-EMAILFUN-LEN.                                 
-000116            PERFORM VARYING WK-POSICAO FROM 30 BY -1                     
-000117                   UNTIL DB2-EMAILFUN-TEXT(WK-POSICAO:1) NOT EQUAL SPACES
-000118                SUBTRACT 1 FROM DB2-EMAILFUN-LEN                         
-000119            END-PERFORM.                                                 
-000120       *******************************************************           
-000121        300-LER-FUNCIONARIOS SECTION.                                    
-000122        301-LER-FUNCIONARIOS.                                            
-000123            EXIT.                                                        
-000124       *******************************************************           
-000125        900-FINALIZAR SECTION.                                           
-000126        901-FINALIZAR.                                                   
-000127            EXIT.                                                        
+000035        77  WK-EMAILFUN-ACCEPT     PIC X(30)       VALUE SPACES.         
+000036       *                                                                 
+000037        PROCEDURE DIVISION.                                              
+000038        000-PRINCIPAL SECTION.                                           
+000039        001-PRINCIPAL.                                                   
+000040            PERFORM 101-INICIAR.                                         
+000041            PERFORM 201-PROCESSAR.                                       
+000042            PERFORM 901-FINALIZAR.                                       
+000043            STOP RUN.                                                    
+000044       *******************************************************           
+000045        100-INICIAR SECTION.                                             
+000046        101-INICIAR.                                                     
+000047            ACCEPT WK-ACCEPT FROM SYSIN.                                 
+000048            ACCEPT WK-ACCEPT FROM SYSIN.                                 
+000049            ACCEPT WK-EMAILFUN-ACCEPT FROM SYSIN.                        
+000050       *******************************************************           
+000051        200-PROCESSAR SECTION.                                           
+000052        201-PROCESSAR.                                                   
+000053            EVALUATE WK-FUNCAO-ACCEPT                                    
+000054                WHEN 'I'                                                 
+000055                    PERFORM 202-INCLUSAO                                 
+000056                WHEN 'E'                                                 
+000057                    PERFORM 203-EXCLUSAO                                 
+000058                WHEN 'A'                                                 
+000059                    PERFORM 204-ALTERACAO                                
+000060                WHEN OTHER                                               
+000061                    DISPLAY 'FUNCAO ' WK-FUNCAO-ACCEPT ' INVALIDA!'      
+000062            END-EVALUATE.                                                
+000063       *                                                                 
+000064        202-INCLUSAO.                                                    
+000065            MOVE WK-CODFUN-ACCEPT     TO DB2-CODFUN.                     
+000066            MOVE WK-NOMEFUN-ACCEPT    TO DB2-NOMEFUN-TEXT.               
+000067            PERFORM 205-CONTA-NOMEFUN.                                   
+000068            MOVE WK-SALARIOFUN-ACCEPT TO DB2-SALARIOFUN.                 
+000069            MOVE WK-DEPTOFUN-ACCEPT   TO DB2-DEPTOFUN.                   
+000070            MOVE WK-ADMISSFUN-ACCEPT  TO DB2-ADMISSFUN.                  
+000071            MOVE WK-IDADEFUN-ACCEPT   TO DB2-IDADEFUN.                   
+000072            MOVE WK-EMAILFUN-ACCEPT   TO DB2-EMAILFUN-TEXT.              
+000073            PERFORM 206-CONTA-EMAILFUN.                                  
+000074            EXEC SQL                                                     
+000075                INSERT INTO EAD719.FUNCIONARIOS                          
+000076                VALUES(:DB2-CODFUN,                                      
+000077                       :DB2-NOMEFUN,                                     
+000078                       :DB2-SALARIOFUN,                                  
+000079                       :DB2-DEPTOFUN,                                    
+000080                       :DB2-ADMISSFUN,                                   
+000081                       :DB2-IDADEFUN,                                   
+000082                       :DB2-EMAILFUN)                                   
+000083            END-EXEC.                                                   
+000084            EVALUATE SQLCODE                                            
+000085                WHEN 0                                                  
+000086                    DISPLAY 'FUNCIONARIO ' DB2-CODFUN                   
+000087                            ' FOI INCLUIDO!'                            
+000088                WHEN -803                                               
+000089                    DISPLAY 'FUNCIONARIO ' DB2-CODFUN                   
+000090                            ' JA EXISTE!'                               
+000091                WHEN -530                                               
+000092                    DISPLAY 'DEPARTAMENTO ' DB2-DEPTOFUN                
+000093                            ' NAO EXISTE!'                              
+000094                WHEN OTHER                                              
+000095                    MOVE SQLCODE TO WK-SQLCODE-EDIT                     
+000096                    DISPLAY 'ERRO ' WK-SQLCODE-EDIT                     
+000097                            ' NO COMANDO INSERT'                        
+000098                    MOVE 12 TO RETURN-CODE                              
+000099                    STOP RUN                                            
+000100            END-EVALUATE.                                               
+000101       *                                                                
+000102        203-EXCLUSAO.                                                   
+000103            MOVE WK-CODFUN-ACCEPT     TO DB2-CODFUN.                    
+000104            EXEC SQL                                                    
+000105                DELETE FROM EAD719.FUNCIONARIOS                         
+000106                    WHERE CODFUN = :DB2-CODFUN                          
+000107            END-EXEC.                                                   
+000108            EVALUATE SQLCODE                                            
+000109                WHEN 0                                                  
+000110                    DISPLAY 'FUNCIONARIO ' DB2-CODFUN                   
+000111                            ' FOI EXCLUIDO!'                            
+000112                WHEN 100                                                
+000113                    DISPLAY 'FUNCIONARIO ' DB2-CODFUN                   
+000114                            ' NAO EXISTE!'                              
+000115                WHEN OTHER                                              
+000116                    MOVE SQLCODE TO WK-SQLCODE-EDIT                     
+000117                    DISPLAY 'ERRO ' WK-SQLCODE-EDIT                     
+000118                            ' NO COMANDO DELETE'                        
+000119                    MOVE 12 TO RETURN-CODE                              
+000120                    STOP RUN                                            
+000121            END-EVALUATE.                                               
+000122       *                                                                
+000123        204-ALTERACAO.                                                  
+000124            MOVE WK-CODFUN-ACCEPT     TO DB2-CODFUN.                    
+000125            IF   WK-NOMEFUN-ACCEPT    NOT = SPACES                      
+000126                PERFORM 210-ALTERA-NOME                                 
+000127            END-IF.                                                     
+000128            IF   WK-SALARIOFUN-ACCEPT IS NUMERIC                        
+000129                PERFORM 211-ALTERA-SALARIO                              
+000130            END-IF.                                                     
+000131            IF   WK-DEPTOFUN-ACCEPT   NOT = SPACES                      
+000132                PERFORM 212-ALTERA-DEPARTAMENTO                         
+000133            END-IF.                                                     
+000134            IF   WK-ADMISSFUN-ACCEPT  NOT = SPACES                      
+000135                PERFORM 213-ALTERA-ADMISSAO                             
+000136            END-IF.                                                     
+000137            IF   WK-IDADEFUN-ACCEPT   IS NUMERIC                        
+000138                PERFORM 214-ALTERA-IDADE                                
+000139            END-IF.                                                     
+000140            IF   WK-EMAILFUN-ACCEPT   NOT = SPACES                      
+000141                PERFORM 215-ALTERA-EMAIL                                 
+000142            END-IF.                                                      
+000143       *                                                                 
+000144        205-CONTA-NOMEFUN.                                               
+000145            MOVE 30 TO DB2-NOMEFUN-LEN.                                  
+000146            PERFORM VARYING WK-POSICAO FROM 30 BY -1                     
+000147                    UNTIL DB2-NOMEFUN-TEXT(WK-POSICAO:1) NOT EQUAL SPACES
+000148                SUBTRACT 1 FROM DB2-NOMEFUN-LEN                          
+000149            END-PERFORM.                                                 
+000150       *                                                                 
+000151        206-CONTA-EMAILFUN.                                              
+000152            MOVE 30 TO DB2-EMAILFUN-LEN.                                 
+000153            PERFORM VARYING WK-POSICAO FROM 30 BY -1                     
+000154                   UNTIL DB2-EMAILFUN-TEXT(WK-POSICAO:1) NOT EQUAL SPACES
+000155                SUBTRACT 1 FROM DB2-EMAILFUN-LEN                         
+000156            END-PERFORM.                                                 
+000157       *                                                                 
+000158        210-ALTERA-NOME.                                                 
+000159            MOVE WK-NOMEFUN-ACCEPT    TO DB2-NOMEFUN-TEXT.               
+000160            PERFORM 205-CONTA-NOMEFUN.                                   
+000161            EXEC SQL                                                     
+000162                UPDATE EAD719.FUNCIONARIOS                               
+000163                    SET NOMEFUN = :DB2-NOMEFUN                           
+000164                    WHERE CODFUN = :DB2-CODFUN                           
+000165            END-EXEC.                                                    
+000166            EVALUATE SQLCODE                                             
+000167                WHEN 0                                                   
+000168                    DISPLAY 'NOME DO FUNCIONARIO ' DB2-CODFUN            
+000169                            ' FOI ALTERADO PARA ' DB2-NOMEFUN-TEXT       
+000170                WHEN 100                                                 
+000171                    DISPLAY 'FUNCIONARIO ' DB2-CODFUN                    
+000172                            ' NAO EXISTE!'                               
+000173                WHEN OTHER                                               
+000174                    MOVE SQLCODE TO WK-SQLCODE-EDIT                      
+000175                    DISPLAY 'ERRO ' WK-SQLCODE-EDIT                      
+000176                            ' NO COMANDO UPDATE'                         
+000177                    MOVE 12 TO RETURN-CODE                               
+000178                    STOP RUN                                             
+000179            END-EVALUATE.                                                
+000180       *                                                                 
+000181        211-ALTERA-SALARIO.                                              
+000182            MOVE WK-SALARIOFUN-ACCEPT    TO DB2-SALARIOFUN.              
+000183            EXEC SQL                                                     
+000184                UPDATE EAD719.FUNCIONARIOS                               
+000185                    SET SALARIOFUN = :DB2-SALARIOFUN                     
+000186                    WHERE CODFUN = :DB2-CODFUN                           
+000187            END-EXEC.                                                    
+000188            EVALUATE SQLCODE                                             
+000189                WHEN 0                                                   
+000190                    MOVE WK-SALARIOFUN-ACCEPT TO WK-SALARIO-EDIT         
+000191                    DISPLAY 'SALARIO DO FUNCIONARIO ' DB2-CODFUN         
+000192                            ' FOI ALTERADO PARA ' WK-SALARIO-EDIT        
+000193                WHEN 100                                                 
+000194                    DISPLAY 'FUNCIONARIO ' DB2-CODFUN                    
+000195                            ' NAO EXISTE!'                               
+000196                WHEN OTHER                                               
+000197                    MOVE SQLCODE TO WK-SQLCODE-EDIT                      
+000198                    DISPLAY 'ERRO ' WK-SQLCODE-EDIT                      
+000199                            ' NO COMANDO UPDATE DO SALARIO'              
+000200                    MOVE 12 TO RETURN-CODE                               
+000201                    STOP RUN                                             
+000202            END-EVALUATE.                                                
+000203       *                                                                 
+000204        212-ALTERA-DEPARTAMENTO.                                         
+000205            MOVE WK-DEPTOFUN-ACCEPT TO DB2-DEPTOFUN.                     
+000206            EXEC SQL                                                     
+000207                UPDATE EAD719.FUNCIONARIOS                               
+000208                    SET DEPTOFUN = :DB2-DEPTOFUN                         
+000209                    WHERE CODFUN = :DB2-CODFUN                           
+000210            END-EXEC.                                                    
+000211            EVALUATE SQLCODE                                             
+000212                WHEN 0                                                   
+000213                    DISPLAY 'DEPARTAMENTO DO FUNCIONARIO ' DB2-CODFUN    
+000214                            ' FOI ALTERADO PARA ' DB2-DEPTOFUN           
+000215                WHEN 100                                                 
+000216                    DISPLAY 'FUNCIONARIO ' DB2-CODFUN                   
+000217                            ' NAO EXISTE!'                              
+000218                WHEN -530                                               
+000219                    DISPLAY 'DEPARTAMENTO ' WK-DEPTOFUN-ACCEPT          
+000220                            ' NAO EXISTE!'                              
+000221                WHEN OTHER                                              
+000222                    MOVE SQLCODE TO WK-SQLCODE-EDIT                     
+000223                    DISPLAY 'ERRO ' WK-SQLCODE-EDIT                     
+000224                            ' NO COMANDO UPDATE DO DEPARTAMENTO'        
+000225                    MOVE 12 TO RETURN-CODE                              
+000226                    STOP RUN                                            
+000227            END-EVALUATE.                                               
+000228       *                                                                
+000229        213-ALTERA-ADMISSAO.                                            
+000230            MOVE WK-ADMISSFUN-ACCEPT  TO DB2-ADMISSFUN.                 
+000231            EXEC SQL                                                    
+000232                UPDATE EAD719.FUNCIONARIOS                              
+000233                    SET ADMISSFUN = :DB2-ADMISSFUN                      
+000234                    WHERE CODFUN = :DB2-CODFUN                          
+000235            END-EXEC.                                                   
+000236            EVALUATE SQLCODE                                            
+000237                WHEN 0                                                  
+000238                    DISPLAY 'ADMISSAO DO FUNCIONARIO ' DB2-CODFUN       
+000239                            ' FOI ALTERADO PARA ' DB2-DEPTOFUN          
+000240                WHEN 100                                                
+000241                    DISPLAY 'FUNCIONARIO ' DB2-CODFUN                   
+000242                            ' NAO EXISTE!'                              
+000243                WHEN OTHER                                              
+000244                    MOVE SQLCODE TO WK-SQLCODE-EDIT                     
+000245                    DISPLAY 'ERRO ' WK-SQLCODE-EDIT                     
+000246                            ' NO COMANDO UPDATE DA ADMISSAO'            
+000247                    MOVE 12 TO RETURN-CODE                              
+000248                    STOP RUN                                            
+000249            END-EVALUATE.                                               
+000250       *                                                                
+000251        214-ALTERA-IDADE.                                               
+000252            MOVE WK-IDADEFUN-ACCEPT  TO DB2-IDADEFUN.                   
+000253            EXEC SQL                                                    
+000254                UPDATE EAD719.FUNCIONARIOS                              
+000255                    SET IDADEFUN = :DB2-IDADEFUN                        
+000256                    WHERE CODFUN = :DB2-CODFUN                          
+000257            END-EXEC.                                                   
+000258            EVALUATE SQLCODE                                            
+000259                WHEN 0                                                  
+000260                    DISPLAY 'IDADE DO FUNCIONARIO ' DB2-CODFUN          
+000261                            ' FOI ALTERADO PARA ' DB2-IDADEFUN           
+000262                WHEN 100                                                 
+000263                    DISPLAY 'FUNCIONARIO ' DB2-CODFUN                    
+000264                            ' NAO EXISTE!'                               
+000265                WHEN OTHER                                               
+000266                    MOVE SQLCODE TO WK-SQLCODE-EDIT                      
+000267                    DISPLAY 'ERRO ' WK-SQLCODE-EDIT                      
+000268                            ' NO COMANDO UPDATE DA IDADE'                
+000269                    MOVE 12 TO RETURN-CODE                               
+000270                    STOP RUN                                             
+000271            END-EVALUATE.                                                
+000272       *                                                                 
+000273        215-ALTERA-EMAIL.                                                
+000274            MOVE WK-EMAILFUN-ACCEPT  TO DB2-EMAILFUN.                    
+000275            EXEC SQL                                                     
+000276                UPDATE EAD719.FUNCIONARIOS                              
+000277                    SET EMAILFUN = :DB2-EMAILFUN                        
+000278                    WHERE CODFUN = :DB2-CODFUN                          
+000279            END-EXEC.                                                   
+000280            EVALUATE SQLCODE                                            
+000281                WHEN 0                                                  
+000282                    DISPLAY 'EMAIL DO FUNCIONARIO ' DB2-CODFUN          
+000283                            ' FOI ALTERADO PARA ' DB2-EMAILFUN          
+000284                WHEN 100                                                
+000285                    DISPLAY 'FUNCIONARIO ' DB2-CODFUN                   
+000286                            ' NAO EXISTE!'                              
+000287                WHEN OTHER                                              
+000288                    MOVE SQLCODE TO WK-SQLCODE-EDIT                     
+000289                    DISPLAY 'ERRO ' WK-SQLCODE-EDIT                     
+000290                            ' NO COMANDO UPDATE DA EMAIL'               
+000291                    MOVE 12 TO RETURN-CODE                               
+000292                    STOP RUN                                             
+000293            END-EVALUATE.                                                
+000294       *******************************************************           
+000295        300-LER-FUNCIONARIOS SECTION.                                    
+000296        301-LER-FUNCIONARIOS.                                            
+000297            EXIT.                                                        
+000298       *******************************************************           
+000299        900-FINALIZAR SECTION.                                           
+000300        901-FINALIZAR.                                                   
+000301            EXIT.                                                        
